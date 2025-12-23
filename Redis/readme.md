@@ -3,6 +3,7 @@
 * [📁Redis란 무엇인가?](#redis란-무엇인가)
 * [📁왜 Redis는 빠른가? (Single Thread & Event Loop)](#왜-redis는-빠른가-single-thread--event-loop)
 * [📁주요 자료구조 (Data Structures)](#주요-자료구조-data-structures)
+* [📁Redis Pub/Sub (메시지 브로커)](#redis-pubsub-메시지-브로커)
 * [📁데이터 영속성 (Persistence: RDB vs AOF)](#데이터-영속성-persistence-rdb-vs-aof)
 * [📁캐싱 전략 (Caching Strategies)](#캐싱-전략-caching-strategies)
 * [📁Redis 운영 시 주의사항 (O(N) 명령어)](#redis-운영-시-주의사항-on-명령어)
@@ -45,6 +46,22 @@
 * **List**: 양방향 연결 리스트. 메시지 큐(Queue) 구현.
 * **Set**: 중복 없는 집합. 고유 방문자 수 집계.
 * **Sorted Set (ZSet)**: 점수(Score)를 기반으로 정렬된 집합. **실시간 리더보드/랭킹 시스템** 구현의 핵심.
+
+---
+
+## 📁Redis Pub/Sub (메시지 브로커)
+
+> Redis는 데이터 저장뿐만 아니라, **실시간 메시지 전달**을 위한 발행/구독(Publish/Subscribe) 패턴을 지원한다.
+
+1.  **구조**:
+    * **Publisher**: 특정 채널(Channel)에 메시지를 발행한다.
+    * **Subscriber**: 채널을 구독하고 있다가, 메시지가 오면 즉시 받는다.
+2.  **특징 (Fire-and-Forget)**:
+    * 메시지를 보관하지 않는다. 구독자가 없을 때 발행된 메시지는 사라진다.
+    * 실시간 채팅, 실시간 알림 등 **즉시성이 중요한 서비스**에 사용된다.
+3.  **Redis Streams (v5.0+)**:
+    * Pub/Sub의 단점(메시지 휘발성)을 보완하기 위해 나온 자료구조.
+    * 로그(Log) 형태로 메시지를 저장하므로, 소비자가 나중에 읽을 수 있다 (Kafka와 유사).
 
 ---
 
