@@ -92,3 +92,36 @@ class PostAPITest(APITestCase):
 * **R**epeatable: 언제 어디서 돌려도 같은 결과여야 한다.
 * **S**elf-validating: 성공/실패가 자체적으로 검증되어야 한다 (print로 확인 X).
 * **T**imely: 구현하기 직전(TDD) 혹은 구현 직후에 짜야 한다.
+
+---
+
+## 4. API 문서화 (drf-spectacular)
+
+FastAPI는 Swagger가 자동이지만, Django는 별도 설정이 필요하다. 과거엔 `drf-yasg`를 썼으나, 최근엔 **`drf-spectacular`**가 표준(`OpenAPI 3.0` 지원)으로 자리 잡았다.
+
+#### 1) 설치 및 설정
+```python
+# settings.py
+INSTALLED_APPS = [ ..., 'drf_spectacular' ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+```
+
+#### 2) 코드에 문서 정보 추가 (@extend_schema)
+Serializer만 잘 짜도 대부분 자동화되지만, 추가 설명이 필요할 때 사용한다.
+
+```python
+from drf_spectacular.utils import extend_schema
+
+class UserViewSet(ModelViewSet):
+    @extend_schema(
+        summary="회원가입",
+        description="이메일과 비밀번호를 받아 회원을 생성합니다.",
+        responses={201: UserSerializer}
+    )
+    def create(self, request, *args, **kwargs):
+        return super().create(request, *args, **kwargs)
+```
+
